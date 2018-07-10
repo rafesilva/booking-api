@@ -6,33 +6,64 @@ const Time = require('../models/time');
 
 
 router.get('/', (req, res, next) => {
-	Time.find().exec().then(docs => {
-		console.log(docs);
-		res.status(200).json(docs);
+	Time.find()
+	.select('time description duration _id')
+	.exec()
+	.then(docs => {
+		const response = {
+		count: docs.length,
+		times: docs.map( doc => {
+			return {
+				time: doc.time,
+				description: doc.description,
+				duration: doc.duration,
+				_id: doc._id,
+				request: {
+					type: 'GET',
+					url: 'https://localhost:3000/times/' + doc._id
+
+				}
+			}
+		})
+	};
+
+	res.status(200).json(response);
 	})
 	.catch(err => {
 		console.log(err);
 		res.status(500).json({
 			error: err
+			
 		});
 	});
 });
 router.post('/', (req, res, next) => {
 	const time = new Time({
 		_id: new mongoose.Types.ObjectId(),
+		time: req.body.time,
 		description: req.body.description,
 		duration: req.body.duration
 	});
 	time.save()
 	.then(result => {
 		console.log(result);
+		res.status(201).json({
+			message: "Scheduled a time succesfully",
+			createdTime: {
+			time: result.time,
+			description: result.description,
+ 			duration: result.duration,
+ 			_id: result._id,
+ 			request: {
+ 				type: 'GET',
+ 				url: 'localhost:3000/times/' + result._id
+ 			
+				}
+			}
+		})
 	})
 	.catch(err => console.log(err));
 
-	res.status(201).json({
-		message: 'Handling POST Time to /times',
-		createdTime: time
-	});
 });
 
 router.get('/:timeId', (req, res, next) => {
@@ -49,7 +80,10 @@ router.get('/:timeId', (req, res, next) => {
 		}
 	})
 	.catch(err => console.log(err));
-});
+	});
+
+
+
 
 router.patch('/:timeId', (req, res, next) => {
 	res.status(200).json({
@@ -57,17 +91,30 @@ router.patch('/:timeId', (req, res, next) => {
 	})
 })
 
-router.delete('/:timeId', (req, res, next) => {
-	const id = req.params.productId;
-	Time.remove({
-		_id: id
-	}).exec().then(result => {
-		res.status(200).json(result);
-	})
-	.catch(err => {
-		console.log(err);
-		error: err
-	});
+
+
+
+router.delete("/:timeId", (req, res, next) => {
+  const id = req.params.timeId;
+  Time.remove({ _id: id })
+    .exec()
+    .then(result => {
+      res.status(200).json({
+          message: 'Time deleted',
+          request: {
+              type: 'POST',
+              url: 'http://localhost:3000/times',
+              body: { description: 'String', duration: 'Number' }
+          }
+      });
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({
+        error: err
+      });
+    });
 });
+
 module.exports = router;
 
