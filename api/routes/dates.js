@@ -88,14 +88,26 @@ router.post('/', (req, res, next) => {
 });
 
 
-router.get('/:dateId', (req, res, next) => {
-	Day.findById(req.body.dateId)
-	.then(time => {	res.status(200).json({
+router.get('/:date/:month/:year', (req, res, next) => {
+	Day.find({
+		date: req.params.date,
+		year: req.params.year,
+		month: req.params.month
+	})
+	.populate('time')
+	.then(days => {	res.status(200).json({
 		message: 'Date and times inside it',
 		dateId: req.params.dateId,	
-		date: req.params.date
-	});}) 
-
+		date: days.map( day => {
+			return { 
+				date: day.date,
+				month: day.month,
+				year: day.year,
+				time: day.time
+				};
+			})
+		});
+	}) 
 });
 
 
