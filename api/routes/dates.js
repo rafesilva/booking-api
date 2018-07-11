@@ -9,23 +9,26 @@ const Time = require('../models/time');
 router.get('/', (req, res, next) => {
 	Day.find()
 	.populate('time')
-	.select('time description duration _id')
+	.select('time description duration _id date month year')
 	.exec()
 	.then(docs => {	res.status(200).json({
 			count: docs.length,
-			days: docs
-			// days: docs.map(doc => {
-			// 	return {
-			// 		_id: doc._id,
-			// 		time: doc.time,
-			// 		description: doc.description,
-			// 		duration: doc.duration,
-			// 		request: {
-			// 			type: 'GET',
-			// 			url: 'https://localhost:3000/dates/' + doc._id
-			// 		}
-			// 	}
-			// })
+			days: docs.map(doc => {
+				return {
+					date: doc.date,
+					month: doc.month,
+					year: doc.year,
+
+					_id: doc._id,
+					time: doc.time,
+					description: doc.description,
+					duration: doc.duration,
+					request: {
+						type: 'GET',
+						url: 'https://localhost:3000/dates/' + doc._id
+					}
+				}
+			})
 		})
 	})
 	.catch(err => {
@@ -39,7 +42,7 @@ router.get('/', (req, res, next) => {
 	
 router.post('/', (req, res, next) => {
 	Time.findById(req.body.timeId)
-    .then(time => {
+    .then( time => {
       if (!time) {
         return res.status(404).json({
           message: "Time in use"
@@ -49,6 +52,9 @@ router.post('/', (req, res, next) => {
 		const day = new Day({
 		_id: mongoose.Types.ObjectId(),
 		date: req.body.date,
+		month: req.body.month,
+		year: req.body.year,
+
 		time: req.body.timeId
 		
 
@@ -62,7 +68,10 @@ router.post('/', (req, res, next) => {
 			createdDay: {
 				_id: result._id,
 				time: result.time,
-				date: result.date
+				date: result.date,
+				month: result.month,
+				year: result.year
+
 			},
 			request: {
 				type: 'GET',
@@ -78,14 +87,15 @@ router.post('/', (req, res, next) => {
 	});
 });
 
-	
-	
 
 router.get('/:dateId', (req, res, next) => {
-	res.status(200).json({
-		message: 'Date times',
-		dateId: req.params.dateId
-	});
+	Day.findById(req.body.dateId)
+	.then(time => {	res.status(200).json({
+		message: 'Date and times inside it',
+		dateId: req.params.dateId,	
+		date: req.params.date
+	});}) 
+
 });
 
 
