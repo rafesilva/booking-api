@@ -13,8 +13,9 @@ router.get('/', (req, res, next) => {
 	.exec()
 	.then(docs => {	res.status(200).json({
 			count: docs.length,
+
 			days: docs.map(doc => {
-				return {
+				return { 
 					date: doc.date,
 					month: doc.month,
 					year: doc.year,
@@ -95,17 +96,22 @@ router.get('/:date/:month/:year', (req, res, next) => {
 		month: req.params.month
 	})
 	.populate('time')
-	.then(days => {	res.status(200).json({
+	.select('time description duration _id date month year')
+	.then(day => {	res.status(200).json({
 		message: 'Date and times inside it',
-		dateId: req.params.dateId,	
-		date: days.map( day => {
-			return { 
-				date: day.date,
-				month: day.month,
-				year: day.year,
-				time: day.time
-				};
-			})
+		day: day
+	
+		// day: days.map( day => {
+		// 	return { 
+		// 		date: day.date,
+		// 		month: day.month,
+		// 		year: day.year,
+		// 		time: day.time
+				
+		// 		};
+		// 	})
+
+	
 		});
 	}) 
 });

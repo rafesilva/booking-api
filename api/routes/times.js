@@ -37,6 +37,7 @@ router.get('/', (req, res, next) => {
 		});
 	});
 });
+
 router.post('/', (req, res, next) => {
 	const time = new Time({
 		_id: new mongoose.Types.ObjectId(),
