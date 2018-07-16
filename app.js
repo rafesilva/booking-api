@@ -10,7 +10,7 @@ const cors = require('cors');
 
 
 
-mongoose.connect('mongodb+srv://rafesilva:' + process.env.MONGO_ATLAS_PW + '@mongoose-demo-m0nct.mongodb.net/test?retryWrites=true', 
+mongoose.connect('mongodb+srv://hackscriptboys:' + process.env.MONGO_ATLAS_PW + '@hackscriptboys-cak53.mongodb.net/test?retryWrites=true', 
 
 	{ useNewUrlParser: true }
 );
