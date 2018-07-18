@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 
 const timeRoutes = require('./api/routes/times');
 const dateRoutes = require('./api/routes/dates');
+const serviceRoutes = require('./api/routes/services');
 const cors = require('cors');
 
 
@@ -34,6 +35,7 @@ app.use((req, res, next) => {
 
 app.use('/times', timeRoutes);
 app.use('/dates', dateRoutes);
+app.use('/services', serviceRoutes);
 
 app.use((error, req, res, next) => {
 	res.status(error.status || 500);
