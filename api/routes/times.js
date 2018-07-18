@@ -3,9 +3,9 @@ const router = express.Router();
 const mongoose = require('mongoose');
 
 const Time = require('../models/time');
+const checkAuth = require('../middleware/check-auth')
 
-
-router.get('/', (req, res, next) => {
+router.get('/', checkAuth, (req, res, next) => {
 	Time.find()
 	.select('time description duration _id')
 	.exec()
@@ -38,7 +38,7 @@ router.get('/', (req, res, next) => {
 	});
 });
 
-router.post('/', (req, res, next) => {
+router.post('/', checkAuth, (req, res, next) => {
 	const time = new Time({
 		_id: new mongoose.Types.ObjectId(),
 		time: req.body.time,
@@ -67,7 +67,7 @@ router.post('/', (req, res, next) => {
 
 });
 
-router.get('/:timeId', (req, res, next) => {
+router.get('/:timeId', checkAuth, (req, res, next) => {
 	const id = req.params.timeId;
 	Time.findById(id)
 	.exec()
@@ -86,7 +86,7 @@ router.get('/:timeId', (req, res, next) => {
 
 
 
-router.patch('/:timeId', (req, res, next) => {
+router.patch('/:timeId', checkAuth, (req, res, next) => {
 	res.status(200).json({
 		message: "Updated succesfully"
 	})
@@ -95,7 +95,7 @@ router.patch('/:timeId', (req, res, next) => {
 
 
 
-router.delete("/:timeId", (req, res, next) => {
+router.delete("/:timeId", checkAuth, (req, res, next) => {
   const id = req.params.timeId;
   Time.remove({ _id: id })
     .exec()

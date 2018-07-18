@@ -6,14 +6,21 @@ const mongoose = require('mongoose');
 
 const timeRoutes = require('./api/routes/times');
 const dateRoutes = require('./api/routes/dates');
+const serviceRoutes = require('./api/routes/services');
+const userRoutes = require('./api/routes/user');
+
 const cors = require('cors');
 
 
 
-mongoose.connect('mongodb+srv://hackscriptboys:' + process.env.MONGO_ATLAS_PW + '@hackscriptboys-cak53.mongodb.net/test?retryWrites=true', 
+mongoose.connect('mongodb+srv://hackscriptboys:' + process.env.MONGO_ATLAS_PW + '@hackscriptboys-cak53.mongodb.net/test?retryWrites=false', 
 
-	{ useNewUrlParser: true }
+	{ useNewUrlParser: true },
+	   
+
 );
+
+mongoose.Promise = global.Promise;
 
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({extended: false}));
@@ -34,6 +41,10 @@ app.use((req, res, next) => {
 
 app.use('/times', timeRoutes);
 app.use('/dates', dateRoutes);
+app.use('/services', serviceRoutes);
+app.use('/user', userRoutes);
+
+
 
 app.use((error, req, res, next) => {
 	res.status(error.status || 500);

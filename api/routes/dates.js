@@ -5,8 +5,10 @@ const mongoose = require('mongoose');
 
 const Day = require('../models/date');
 const Time = require('../models/time');
+const checkAuth = require('../middleware/check-auth')
 
-router.get('/', (req, res, next) => {
+
+router.get('/', checkAuth, (req, res, next) => {
 	Day.find()
 	.populate('time')
 	.select('time description duration _id date month year')
@@ -41,7 +43,7 @@ router.get('/', (req, res, next) => {
 	});
 		
 	
-router.post('/', (req, res, next) => {
+router.post('/', checkAuth, (req, res, next) => {
 	Time.findById(req.body.timeId)
     .then( time => {
       if (!time) {
@@ -89,7 +91,7 @@ router.post('/', (req, res, next) => {
 });
 
 
-router.get('/:date/:month/:year', (req, res, next) => {
+router.get('/:date/:month/:year', checkAuth, (req, res, next) => {
 	Day.find({
 		date: req.params.date,
 		year: req.params.year,
@@ -117,7 +119,7 @@ router.get('/:date/:month/:year', (req, res, next) => {
 });
 
 
-router.delete("/:dateId", (req, res, next) => {
+router.delete("/:dateId", checkAuth, (req, res, next) => {
   Day.remove({ _id: req.params.dateId })
     .exec()
     .then(result => {
