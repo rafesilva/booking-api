@@ -3,7 +3,7 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const Service = require('../models/service');
 
-router.get('/', (res) => {
+router.get('/', (req, res, next) => {
 	Service.find()
 	.select('name description duration _id')
 	.exec()
@@ -19,7 +19,7 @@ router.get('/', (res) => {
 				_id: doc._id,
 				request: {
 					type: 'GET',
-					url: 'https://localhost:3000/services/' + doc._id
+					url: 'localhost:3000/services/' + doc._id
 
 				}
 			}
@@ -37,7 +37,7 @@ router.get('/', (res) => {
 	});
 });
 
-router.post('/', (req, res) => {
+router.post('/', (req, res, next) => {
 	const service = new Service({
 		_id: new mongoose.Types.ObjectId(),
 		name: req.body.name,
@@ -67,7 +67,7 @@ router.post('/', (req, res) => {
 	.catch(err => console.log(err));
 });
 
-router.get('/:serviceId', (req, res) => {
+router.get('/:serviceId', (req, res, next) => {
 	const id = req.params.serviceId;
 	Service.findById(id)
 	.exec()
@@ -83,22 +83,22 @@ router.get('/:serviceId', (req, res) => {
 	.catch(err => console.log(err));
 	});
 
-router.patch('/:serviceId', (res) => {
+router.patch('/:serviceId', (req, res, next) => {
 	res.status(200).json({
 		message: "Updated succesfully"
 	})
 })
 
-router.delete("/:serviceId", (res) => {
+router.delete("/:serviceId", (req, res, next) => {
   const id = req.params.serviceId;
   Service.remove({ _id: id })
     .exec()
-    .then(res => {
+    .then(result => {
       res.status(200).json({
           message: 'Service deleted',
           request: {
               type: 'POST',
-              url: 'http://localhost:3000/services',
+              url: 'localhost:3000/services',
               body: { description: 'String', duration: 'Number', price: 'Number' }
           }
       });
