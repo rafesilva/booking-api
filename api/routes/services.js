@@ -3,14 +3,14 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const Service = require('../models/service');
 
-router.get('/', (req, res, next) => {
-	Time.find()
+router.get('/', (res) => {
+	Service.find()
 	.select('name description duration _id')
 	.exec()
 	.then(docs => {
 		const response = {
 		count: docs.length,
-		times: docs.map( doc => {
+		services: docs.map( doc => {
 			return {
 				name: doc.name,
 				description: doc.description,
@@ -37,7 +37,7 @@ router.get('/', (req, res, next) => {
 	});
 });
 
-router.post('/', (req, res, next) => {
+router.post('/', (req, res) => {
 	const service = new Service({
 		_id: new mongoose.Types.ObjectId(),
 		name: req.body.name,
@@ -51,14 +51,14 @@ router.post('/', (req, res, next) => {
 		res.status(201).json({
 			message: "Item chosen, now choose a time",
 			createdTime: {
-			name: result.time,
+			name: result.name,
 			description: result.description,
  			duration: result.duration,
       price: result.price,
        _id: result._id,
  			request: {
  				type: 'GET',
- 				url: 'localhost:3000/times/' + result._id
+ 				url: 'localhost:3000/services/' + result._id
  			
 				}
 			}
@@ -67,7 +67,7 @@ router.post('/', (req, res, next) => {
 	.catch(err => console.log(err));
 });
 
-router.get('/:serviceId', (req, res, next) => {
+router.get('/:serviceId', (req, res) => {
 	const id = req.params.serviceId;
 	Service.findById(id)
 	.exec()
@@ -83,22 +83,22 @@ router.get('/:serviceId', (req, res, next) => {
 	.catch(err => console.log(err));
 	});
 
-router.patch('/:serviceId', (req, res, next) => {
+router.patch('/:serviceId', (res) => {
 	res.status(200).json({
 		message: "Updated succesfully"
 	})
 })
 
-router.delete("/:serviceId", (req, res, next) => {
+router.delete("/:serviceId", (res) => {
   const id = req.params.serviceId;
   Service.remove({ _id: id })
     .exec()
-    .then(result => {
+    .then(res => {
       res.status(200).json({
           message: 'Service deleted',
           request: {
               type: 'POST',
-              url: 'http://localhost:3000/times',
+              url: 'http://localhost:3000/services',
               body: { description: 'Text', duration: 'Number', price: 'Number' }
           }
       });
