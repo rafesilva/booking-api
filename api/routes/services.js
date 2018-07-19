@@ -4,13 +4,13 @@ const mongoose = require('mongoose');
 const Service = require('../models/service');
 
 router.get('/', (req, res, next) => {
-	Time.find()
+	Service.find()
 	.select('name description duration _id')
 	.exec()
 	.then(docs => {
 		const response = {
 		count: docs.length,
-		times: docs.map( doc => {
+		services: docs.map( doc => {
 			return {
 				name: doc.name,
 				description: doc.description,
@@ -19,7 +19,7 @@ router.get('/', (req, res, next) => {
 				_id: doc._id,
 				request: {
 					type: 'GET',
-					url: 'https://localhost:3000/services/' + doc._id
+					url: 'localhost:3000/services/' + doc._id
 
 				}
 			}
@@ -51,14 +51,14 @@ router.post('/', (req, res, next) => {
 		res.status(201).json({
 			message: "Item chosen, now choose a time",
 			createdTime: {
-			name: result.time,
+			name: result.name,
 			description: result.description,
  			duration: result.duration,
       price: result.price,
        _id: result._id,
  			request: {
  				type: 'GET',
- 				url: 'localhost:3000/times/' + result._id
+ 				url: 'localhost:3000/services/' + result._id
  			
 				}
 			}
@@ -98,8 +98,8 @@ router.delete("/:serviceId", (req, res, next) => {
           message: 'Service deleted',
           request: {
               type: 'POST',
-              url: 'http://localhost:3000/times',
-              body: { description: 'Text', duration: 'Number', price: 'Number' }
+              url: 'localhost:3000/services',
+              body: { description: 'String', duration: 'Number', price: 'Number' }
           }
       });
     })
