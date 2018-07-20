@@ -17,7 +17,6 @@ mongoose.connect('mongodb+srv://hackscriptboys:' + process.env.MONGO_ATLAS_PW + 
 
 	{ useNewUrlParser: true },
 	   
-
 );
 
 mongoose.Promise = global.Promise;

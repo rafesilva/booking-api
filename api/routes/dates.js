@@ -43,7 +43,7 @@ router.get('/', checkAuth, (req, res, next) => {
 	});
 		
 	
-router.post('/', checkAuth, (req, res, next) => {
+router.post('/', (req, res, next) => {
 	Time.findById(req.body.timeId)
     .then( time => {
       if (!time) {
@@ -119,7 +119,7 @@ router.get('/:date/:month/:year', checkAuth, (req, res, next) => {
 });
 
 
-router.delete("/:dateId", checkAuth, (req, res, next) => {
+router.delete("/:dateId", (req, res, next) => {
   Day.remove({ _id: req.params.dateId })
     .exec()
     .then(result => {

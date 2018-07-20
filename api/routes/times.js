@@ -3,9 +3,11 @@ const router = express.Router();
 const mongoose = require('mongoose');
 
 const Time = require('../models/time');
+
 const checkAuth = require('../middleware/check-auth')
 
 router.get('/', checkAuth, (req, res, next) => {
+	console.dir('GET TIMES', req)
 	Time.find()
 	.select('time description duration _id')
 	.exec()
@@ -95,7 +97,7 @@ router.patch('/:timeId', checkAuth, (req, res, next) => {
 
 
 
-router.delete("/:timeId", checkAuth, (req, res, next) => {
+router.delete("/:timeId", (req, res, next) => {
   const id = req.params.timeId;
   Time.remove({ _id: id })
     .exec()
