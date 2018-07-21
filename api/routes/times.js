@@ -41,6 +41,7 @@ router.get('/', checkAuth, (req, res, next) => {
 });
 
 router.post('/', checkAuth, (req, res, next) => {
+	console.dir('POST time', req)
 	const time = new Time({
 		_id: new mongoose.Types.ObjectId(),
 		time: req.body.time,
@@ -85,17 +86,11 @@ router.get('/:timeId', checkAuth, (req, res, next) => {
 	.catch(err => console.log(err));
 	});
 
-
-
-
 router.patch('/:timeId', checkAuth, (req, res, next) => {
 	res.status(200).json({
 		message: "Updated succesfully"
 	})
 })
-
-
-
 
 router.delete("/:timeId", (req, res, next) => {
   const id = req.params.timeId;
